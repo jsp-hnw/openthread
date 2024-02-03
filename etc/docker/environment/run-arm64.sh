@@ -67,7 +67,7 @@ done
 #RUN_DIR_DOCKER="/tmp"
 
 RUN_DIR_HOST="$here/../../../"
-RUN_DIR_DOCKER="/connectedhomeip/"
+RUN_DIR_DOCKER="/openthread/"
 
 docker run --platform linux/arm64 --rm -it "${runargs[@]}" \
     -w "$RUN_DIR_DOCKER" \
