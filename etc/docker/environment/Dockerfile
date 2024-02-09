@@ -1,6 +1,10 @@
 # Ubuntu image with tools required to build OpenThread
 FROM ubuntu:18.04
 
+ARG USERNAME=humax
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+
 ENV DEBIAN_FRONTEND noninteractive
 ENV LANG en_US.UTF-8
 
@@ -26,9 +30,9 @@ RUN set -x \
 
 # set up openthread simulation cli example apps 
 WORKDIR /
-COPY . openthread
+COPY . openthread-save
 RUN set -x \
-    && cd openthread \
+    && cd openthread-save \
     && ./script/bootstrap \
     && mkdir build \
     && cd build \
@@ -38,5 +42,13 @@ RUN set -x \
 # set up ot-daemon
 WORKDIR /
 RUN set -x \
-    && cd openthread \
+    && cd openthread-save \
     && ./script/cmake-build posix -DOT_DAEMON=ON
+
+RUN groupadd -g $USER_GID $USERNAME \
+    && useradd -s /bin/bash -u $USER_UID -g $USER_GID -G sudo -m $USERNAME \
+    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
+    && chmod 0440 /etc/sudoers.d/$USERNAME \
+    && :
+
+USER $USERNAME
