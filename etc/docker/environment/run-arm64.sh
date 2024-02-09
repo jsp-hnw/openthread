@@ -69,7 +69,16 @@ done
 RUN_DIR_HOST="$here/../../../"
 RUN_DIR_DOCKER="/openthread/"
 
-docker run --platform linux/arm64 --rm -it "${runargs[@]}" \
+context=$(docker context show)
+if [ "$context" == "default" ]; then
+  uid=$(id -u)
+  gid=$(id -g)
+else # if docker desktop
+  uid=root
+  gid=root
+fi
+
+docker run --platform linux/arm64 --rm -it --user $uid:$gid "${runargs[@]}" \
     -w "$RUN_DIR_DOCKER" \
     -v "$RUN_DIR_HOST:$RUN_DIR_DOCKER" \
     "$IMAGE" "$@"
