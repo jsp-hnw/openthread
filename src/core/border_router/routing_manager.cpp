@@ -2120,9 +2120,12 @@ void RoutingManager::LocalOnLinkPrefix::Generate(void)
     // Global ID: 40 most significant bits of Extended PAN ID
     memcpy(mPrefix.mPrefix.mFields.m8 + 1, extPanId.m8, 5);
     // Subnet ID: 16 least significant bits of Extended PAN ID
-    memcpy(mPrefix.mPrefix.mFields.m8 + 6, extPanId.m8 + 6, 2);
-    mPrefix.SetLength(kOnLinkPrefixLength);
+    // memcpy(mPrefix.mPrefix.mFields.m8 + 6, extPanId.m8 + 6, 2);
+    // humax code
+    unsigned short tmp = (unsigned short)TimerMilli::GetNow().GetValue();
+    memcpy(mPrefix.mPrefix.mFields.m8 + 6, (void *)&tmp, 2);
 
+    mPrefix.SetLength(kOnLinkPrefixLength);
     LogNote("Local on-link prefix: %s", mPrefix.ToString().AsCString());
 }
 
